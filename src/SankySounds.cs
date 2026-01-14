@@ -1,13 +1,11 @@
 using System.Collections.Concurrent;
 using AudioApi;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SwiftlyS2.Shared;
 using SwiftlyS2.Shared.Commands;
 using SwiftlyS2.Shared.GameEventDefinitions;
 using SwiftlyS2.Shared.GameEvents;
-using SwiftlyS2.Shared.Menus;
 using SwiftlyS2.Shared.Misc;
 using SwiftlyS2.Shared.Players;
 using SwiftlyS2.Shared.Plugins;
@@ -94,29 +92,11 @@ public partial class Sanky_Sounds : BasePlugin
                 string sound = kvp.Value;
                 string prefix = Config.Prefix;
 
-                if (!string.IsNullOrEmpty(prefix))
+                foreach (string key in keys)
                 {
-                    foreach (string key in keys)
-                    {
-                        string validKey = prefix + key;
+                    string validKey = prefix + key;
 
-                        if (text == validKey)
-                        {
-                            foreach (var otherPlayer in Core.PlayerManager.GetAllPlayers())
-                            {
-                                if (_hasSoundEnabled.TryGetValue(player.SteamID, out bool value) && value == true)
-                                {
-                                    PlaySound(player, sound);
-                                }
-                            }
-                            return Config.ShowMessages ? HookResult.Continue : HookResult.Stop;
-
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (string key in keys)
+                    if (text == validKey)
                     {
                         foreach (var otherPlayer in Core.PlayerManager.GetAllPlayers())
                         {
@@ -125,8 +105,8 @@ public partial class Sanky_Sounds : BasePlugin
                                 PlaySound(player, sound);
                             }
                         }
-
                         return Config.ShowMessages ? HookResult.Continue : HookResult.Stop;
+
                     }
                 }
             }
